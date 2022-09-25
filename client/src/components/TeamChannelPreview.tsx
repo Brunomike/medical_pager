@@ -1,6 +1,7 @@
 import React from 'react'
 import { Avatar, useChatContext, Channel } from 'stream-chat-react'
 
+
 interface Props {
   channel: Channel
   type: string
@@ -10,7 +11,7 @@ interface Members {
 
 }
 
-const TeamChannelPreview = ({ channel, type }) => {
+const TeamChannelPreview: React.FC = ({ channel, type }) => {
   const { channel: activeChannel, client } = useChatContext();
 
   const ChannelPreview = () => {
@@ -24,15 +25,25 @@ const TeamChannelPreview = ({ channel, type }) => {
     return (
       <div className='channel-preview__item single'>
         <Avatar
-          image={members[0].user.image}
+          image={members[0]?.user?.image}
+          name={members[0]?.user?.fullName}
         />
+        <p>{members[0]?.user?.fullName}</p>
       </div>
     )
   }
 
   return (
-    <div>
-
+    <div className={
+      channel?.id === activeChannel?.id
+        ? 'channel-preview__wrapper__selected'
+        : 'channel-preview__wrapper'
+    }
+      onClick={() => {
+        console.log(channel);
+      }}      
+    >
+      {type === 'team' ? <ChannelPreview /> : <DirectPreview />}
     </div>
   )
 }
