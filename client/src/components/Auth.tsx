@@ -1,8 +1,10 @@
-import React, { ChangeEvent, ChangeEventHandler, useState } from 'react'
+import React, { ChangeEvent, ChangeEventHandler, EventHandler, FormEventHandler, useState } from 'react'
 import Cookies from 'universal-cookie'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 import signInImage from '../assets/signup.jpg'
+
+const cookies = new Cookies()
 
 interface AuthState {
     fullName: string
@@ -22,6 +24,15 @@ const initialState = {
     avatarURL: ''
 }
 
+interface AuthData {
+    userId: string,
+    token: string,
+    userName: string,
+    fullName: string,
+    hashedPassword?: string,
+    phoneNumber?: string
+}
+
 const Auth = () => {
     const [form, setForm] = useState<AuthState>(initialState);
     const [isSignup, setIsSignup] = useState(true);
@@ -35,15 +46,34 @@ const Auth = () => {
         })
     }
 
-    const handleSubmit = (e: SubmitEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(form);
+        const URL = "http://localhost:5000/auth"
+
+        const response: AxiosResponse<AuthData> = await axios.post(`${URL}/${isSignup ? 'signup' : 'login'}`, {
+            userName, password, fullName, phoneNumber, avatarURL
+        })
+
+        const { token, userId, hashedPassword } = response.data
         
+        // const { data: { token, userId, hashedPassword } } = await axios.post<AuthData>(`${URL}/${isSignup ? 'signup' : 'login'}`, {
+        //     userName, password, fullName, phoneNumber, avatarURL
+        // })
+
+        //const { token, userId, hashedPassword } = data
+
+        cookies.set('token', token)
+        cookies.set('userName', userName)
+        cookies.set('fullName', fullName)
+        cookies.set('userId', userId)
+
         if (isSignup) {
-
-        } else {
-
+            cookies.set('phoneNumber', phoneNumber)
+            cookies.set('avatarURL', avatarURL)
+            cookies.set('hashedPassword', hashedPassword)
         }
+
+        window.location.reload()
     }
 
     const switchMode = () => {

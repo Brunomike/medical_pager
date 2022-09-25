@@ -1,9 +1,31 @@
 import React from 'react'
-import { Avatar, useChatContext, Channel } from 'stream-chat-react'
+import { Avatar, useChatContext } from 'stream-chat-react'
 
+
+interface User {
+  id: string,
+  name: string,
+  fullName: string,
+  image: string,
+  hashedPassword: string,
+  phoneNumber: string
+}
 
 interface Props {
-  channel: Channel
+  channel: {
+    id: string,
+    data: {
+      id: string,
+      name: string,
+    },
+    state: {
+      members: [
+        {
+          user: User
+        }
+      ]
+    }
+  }
   type: string
 }
 
@@ -11,15 +33,14 @@ interface Members {
 
 }
 
-const TeamChannelPreview: React.FC = ({ channel, type }) => {
+const TeamChannelPreview: React.FC<Props> = ({ channel, type }) => {
   const { channel: activeChannel, client } = useChatContext();
 
-  const ChannelPreview = () => {
+  const ChannelPreview = () => (
     <p className='channel-preview__item'>
       #{channel?.data?.name || channel?.data?.id}
     </p>
-  }
-
+  )
   const DirectPreview = () => {
     const members = Object.values(channel.state.members).filter(({ user }) => user.id !== client.userID);
     return (
@@ -41,7 +62,7 @@ const TeamChannelPreview: React.FC = ({ channel, type }) => {
     }
       onClick={() => {
         console.log(channel);
-      }}      
+      }}
     >
       {type === 'team' ? <ChannelPreview /> : <DirectPreview />}
     </div>
