@@ -4,15 +4,22 @@ import { AddChannel } from '../assets';
 
 
 interface Props {
-  children?: JSX.Element[] | JSX.Element | undefined,
-  error: boolean,
-  loading: boolean,
+  children?: JSX.Element[] | JSX.Element | undefined
+  error: boolean
+  loading: boolean
   type: string
+  isCreating: boolean
+  setIsCreating: (value: boolean) => void
+  setIsEditing: (value: boolean) => void
+  setCreateType: (value: string) => void
+  setToggleContainer: (value: boolean) => void
 }
 
 
-const TeamChannelList: React.FC<Props> = ({ children, error = false, loading, type }) => {
-//const TeamChannelList = ({ children, error = false, loading, type }) => {
+
+
+const TeamChannelList: React.FC<Props> = ({ children, error = false, loading, type, isCreating, setIsCreating, setCreateType, setIsEditing,setToggleContainer }) => {
+  //const TeamChannelList = ({ children, error = false, loading, type }) => {
   if (error) {
     return type === 'team' ? (
       <div className='team-channel-list'>
@@ -40,6 +47,14 @@ const TeamChannelList: React.FC<Props> = ({ children, error = false, loading, ty
           {type === 'team' ? 'Channels' : 'Direct Messages'}
         </p>
         {/* Button - add a channel */}
+        <AddChannel
+          isCreating={isCreating}
+          setIsCreating={setIsCreating}
+          setCreateType={setCreateType}
+          setIsEditing={setIsEditing}
+          setToggleContainer={setToggleContainer}
+          type={type === 'team' ? 'team' : 'messaging'}
+        />
       </div>
       {children}
     </div>

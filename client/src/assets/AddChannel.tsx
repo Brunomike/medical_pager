@@ -1,6 +1,15 @@
 import React from 'react';
 
-export const AddChannel = ({ setCreateType, setIsCreating, setIsEditing, setToggleContainer, type }) => (
+interface Props {
+  type: string
+  isCreating: boolean
+  setIsCreating: (value: boolean) => void
+  setIsEditing: (value: boolean) => void
+  setCreateType: (value: string) => void
+  setToggleContainer: () => void
+}
+
+export const AddChannel: React.FC<Props> = ({ setCreateType, setIsCreating, setIsEditing, setToggleContainer, type }) => (
   <svg
     width='14'
     height='14'
@@ -11,7 +20,7 @@ export const AddChannel = ({ setCreateType, setIsCreating, setIsEditing, setTogg
       setCreateType(type);
       setIsCreating((prevState) => !prevState);
       setIsEditing(false);
-      if(setToggleContainer) setToggleContainer((prevState) => !prevState) 
+      if (setToggleContainer) setToggleContainer((prevState) => !prevState)
     }}
   >
     <path

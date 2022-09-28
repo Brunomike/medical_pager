@@ -51,10 +51,10 @@ const Auth = () => {
         const URL = "http://localhost:5000/auth"
 
         const response: AxiosResponse<AuthData> = await axios.post(`${URL}/${isSignup ? 'signup' : 'login'}`, {
-            userName, password, fullName, phoneNumber, avatarURL
+            userName, password, fullName:form.fullName, phoneNumber, avatarURL
         })
 
-        const { token, userId, hashedPassword } = response.data
+        const { token, userId, hashedPassword, fullName } = response.data
         
         // const { data: { token, userId, hashedPassword } } = await axios.post<AuthData>(`${URL}/${isSignup ? 'signup' : 'login'}`, {
         //     userName, password, fullName, phoneNumber, avatarURL
