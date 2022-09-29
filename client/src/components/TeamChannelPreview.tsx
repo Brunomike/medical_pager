@@ -1,16 +1,7 @@
 import React from 'react'
 import { Avatar, useChatContext } from 'stream-chat-react'
 
-
-interface User {
-  id: string,
-  name: string,
-  fullName: string,
-  image: string,
-  hashedPassword: string,
-  phoneNumber: string
-
-}
+import { User, Channel } from '../data_structure'
 
 interface Props {
   channel: {
@@ -26,20 +17,20 @@ interface Props {
         }
       ]
     }
-
   }
   type: string
-  setIsCreating: boolean
-  setIsEditing: boolean
-  setActiveChannel:{}
+  isCreating: boolean
+  setIsCreating: (value: boolean) => void
+  setIsEditing: (value: boolean) => void
+  // TODO : INTRODUCE CORRECT TYPE
+  setActiveChannel: any
+  toggle: boolean
   setToggleContainer: (value: boolean) => void
 }
 
-interface Members {
 
-}
 
-const TeamChannelPreview: React.FC<Props> = ({ setActiveChannel,channel, type, setIsCreating, setIsEditing, setToggleContainer }) => {
+const TeamChannelPreview: React.FC<Props> = ({ isCreating, toggle, setActiveChannel, channel, type, setIsCreating, setIsEditing, setToggleContainer }) => {
   const { channel: activeChannel, client } = useChatContext();
 
   const ChannelPreview = () => (
@@ -63,7 +54,7 @@ const TeamChannelPreview: React.FC<Props> = ({ setActiveChannel,channel, type, s
 
   return (
     <div className={
-      channel?.id === activeChannel?.id
+      channel.id === activeChannel?.id
         ? 'channel-preview__wrapper__selected'
         : 'channel-preview__wrapper'
     }
@@ -73,7 +64,7 @@ const TeamChannelPreview: React.FC<Props> = ({ setActiveChannel,channel, type, s
         setActiveChannel(channel)
 
         if (setToggleContainer) {
-          setToggleContainer((prevState) => !prevState)
+          setToggleContainer(!toggle)
         }
       }}
     >

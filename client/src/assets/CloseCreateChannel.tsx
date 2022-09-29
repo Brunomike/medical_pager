@@ -1,6 +1,11 @@
 import React from 'react';
 
-export const CloseCreateChannel = ({ setIsCreating, setIsEditing }) => (
+interface CloseProps{
+  setIsCreating?:(value:boolean)=>void
+  setIsEditing:(value:boolean)=>void
+}
+
+export const CloseCreateChannel : React.FC<CloseProps> = ({ setIsCreating, setIsEditing }) => (
   <svg
     width='32'
     height='32'
@@ -18,3 +23,4 @@ export const CloseCreateChannel = ({ setIsCreating, setIsEditing }) => (
     />
   </svg>
 );
+

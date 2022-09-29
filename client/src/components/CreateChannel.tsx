@@ -46,7 +46,7 @@ const CreateChannel: React.FC<Props> = ({ createType, setIsCreating, setIsEditin
             await newChannel.watch()
             setChannelName('')
             setIsCreating(false)
-            setSelectedUsers([client.userID])
+            setSelectedUsers([client.userID as string])
             setActiveChannel(newChannel)
         } catch (error) {
             console.log(error);
@@ -59,7 +59,7 @@ const CreateChannel: React.FC<Props> = ({ createType, setIsCreating, setIsEditin
                 <CloseCreateChannel setIsCreating={setIsCreating} setIsEditing={setIsEditing} />
             </div>
             {createType === 'team' && <ChannelNameInput channelName={channelName} setChannelName={setChannelName} />}
-            <UserList setSelectedUsers={setSelectedUsers} />
+            <UserList  selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
             <div className='create-channel__button-wrapper' onClick={createChannel}>
                 <p>{createType === 'team' ? 'Create Channel' : 'Create Message Group'}</p>
             </div>

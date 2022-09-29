@@ -12,13 +12,13 @@ interface Props {
   setIsCreating: (value: boolean) => void
   setIsEditing: (value: boolean) => void
   setCreateType: (value: string) => void
+  toggle: boolean
   setToggleContainer: (value: boolean) => void
 }
 
 
 
-
-const TeamChannelList: React.FC<Props> = ({ children, error = false, loading, type, isCreating, setIsCreating, setCreateType, setIsEditing,setToggleContainer }) => {
+const TeamChannelList: React.FC<Props> = ({ toggle, children, error = false, loading, type, isCreating, setIsCreating, setCreateType, setIsEditing, setToggleContainer }) => {
   //const TeamChannelList = ({ children, error = false, loading, type }) => {
   if (error) {
     return type === 'team' ? (
@@ -52,6 +52,7 @@ const TeamChannelList: React.FC<Props> = ({ children, error = false, loading, ty
           setIsCreating={setIsCreating}
           setCreateType={setCreateType}
           setIsEditing={setIsEditing}
+          toggle={toggle}
           setToggleContainer={setToggleContainer}
           type={type === 'team' ? 'team' : 'messaging'}
         />

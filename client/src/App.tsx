@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie';
 import { STREAM_KEY } from './keys';
 import { ChannelContainer, ChannelListContainer, Auth } from './components';
 import './App.css';
-import 'stream-chat-ract/dist/css/index.css'
+import 'stream-chat-react/dist/css/index.css'
 
 const cookies = new Cookies()
 
@@ -32,7 +32,7 @@ const App: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false)
 
 
-  if (!authToken) return <Auth />
+  // if (!authToken) return <Auth />
 
   return (
     <div className="app__wrapper">

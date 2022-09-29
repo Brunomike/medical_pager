@@ -3,6 +3,12 @@ import { useChatContext } from 'stream-chat-react'
 
 import { UserList } from './'
 import { CloseCreateChannel } from '../assets'
+import { User } from '../data_structure'
+
+interface InputProps {
+  channelName: string | undefined
+  setChannelName: (value: string) => void
+}
 
 const ChannelNameInput: React.FC<InputProps> = ({ channelName, setChannelName }) => {
   const { client, setActiveChannel } = useChatContext()
@@ -22,15 +28,20 @@ const ChannelNameInput: React.FC<InputProps> = ({ channelName, setChannelName })
   )
 }
 
-const EditChannel = ({ setIsEditing }) => {
+interface EditChannelProps {
+  setIsEditing: (value: boolean) => void
+}
+
+const EditChannel: React.FC<EditChannelProps> = ({ setIsEditing }) => {
   const { channel } = useChatContext()
   const [channelName, setChannelName] = useState(channel?.data?.name)
-  const [selectedUsers, setSelectedUsers] = useState([])
+  // TODO : INTRODUCE CORRECT TYPE
+  const [selectedUsers, setSelectedUsers] = useState<any[]>([])
 
 
   const updateChannel = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
-    const nameChanged = channelName !== (channel?.data.name || channel?.data.id)
+    const nameChanged = channelName !== (channel?.data?.name || channel?.data?.id)
 
     if (nameChanged) {
       await channel?.update({ name: channelName }, { text: `Channel name changed to ${channelName}` })
@@ -38,7 +49,8 @@ const EditChannel = ({ setIsEditing }) => {
     if (selectedUsers.length) {
       await channel?.addMembers(selectedUsers)
     }
-    setChannelName(null)
+    setChannelName(channel?.data?.name)
+    //setChannelName(null)
     setIsEditing(false)
     setSelectedUsers([])
   }
@@ -51,7 +63,7 @@ const EditChannel = ({ setIsEditing }) => {
         <CloseCreateChannel setIsEditing={setIsEditing} />
       </div>
       <ChannelNameInput channelName={channelName} setChannelName={setChannelName} />
-      <UserList setSelectedUsers={setSelectedUsers} />
+      <UserList selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
 
       <div className='edit-channel__button-wrapper' onClick={updateChannel}>
         <p>Save Changes</p>

@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { ChannelList, useChatContext, ChannelProps } from 'stream-chat-react';
+import { ChannelList, useChatContext} from 'stream-chat-react';
 import Cookies from 'universal-cookie';
 
-import { ChannelSearch, TeamChannelList, TeamChannelPreview } from '.';
+import { ChannelSearch, TeamChannelList, TeamChannelPreview } from './';
+import {Channel} from '../data_structure'
+
 import HospitalIcon from '../assets/hospital.png'
 import LogoutIcon from '../assets/logout.png'
 
 interface Props {
-  logout: () => void
+  logout?: () => void
   isCreating: boolean
-  setIsCreating: (value: boolean) => void
+  setIsCreating?: (value: boolean) => void
   setIsEditing: (value: boolean) => void
   setCreateType: (value: string) => void
-  setToggleContainer: (value: boolean) => void
+  setToggleContainer?: (value: boolean) => void
 }
 
 const cookies = new Cookies()
 
-const Sidebar: React.FC<Props> = ({ logout, setIsEditing }) => (
+interface SidebarProps {
+  logout: () => void
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ logout }) => (
   <div className="channel-list__sidebar">
     <div className='channel-list__sidebar__icon1'>
       <div className='icon1__inner'>
@@ -38,15 +44,25 @@ const CompanyHeader = () => (
   </div>
 )
 
-const customChannelTeamFilter = (channels: []) => {
+const customChannelTeamFilter = (channels: Channel[]) => {
   return channels.filter((channel) => channel.type === 'team')
 }
 
-const customChannelMessagingFilter = (channels: []) => {
-  return channels.filter((channel) => channel.type === 'messaging')
+const customChannelMessagingFilter = (channels: Channel[]) => {
+  return channels.filter((channel) => channel.type === 'messaging')  
 }
 
-const ChannelListContent: React.FC<Props> = ({ isCreating, setIsCreating, setCreateType, setIsEditing ,setToggleContainer}) => {
+interface ChannelListContentProps {  
+  isCreating: boolean
+  toggle:boolean
+  setIsCreating: (value: boolean) => void
+  setIsEditing: (value: boolean) => void
+  setCreateType: (value: string) => void
+  setToggleContainer: (value: boolean) => void
+}
+
+
+const ChannelListContent: React.FC<ChannelListContentProps> = ({ toggle,isCreating, setIsCreating, setCreateType, setIsEditing ,setToggleContainer}) => {
   const { client } = useChatContext()
 
   const logout = () => {
@@ -62,13 +78,14 @@ const ChannelListContent: React.FC<Props> = ({ isCreating, setIsCreating, setCre
   }
 
   const filters = { members: { $in: [client.userID] } }
+  
 
   return (
     <>
       <Sidebar logout={logout} />
       <div className='channel-list__list__wrapper'>
         <CompanyHeader />
-        <ChannelSearch setToggleContainer={setToggleContainer} />
+        <ChannelSearch toggle={toggle} setToggleContainer={setToggleContainer} />
         <ChannelList
           filters={filters}
           channelRenderFilterFn={customChannelTeamFilter}
@@ -80,15 +97,17 @@ const ChannelListContent: React.FC<Props> = ({ isCreating, setIsCreating, setCre
               setIsCreating={setIsCreating}
               setCreateType={setCreateType}
               setIsEditing={setIsEditing}
+              toggle={toggle}
               setToggleContainer={setToggleContainer}
             />
           )}
           Preview={(previewProps) => {
             <TeamChannelPreview
               {...previewProps}   
-              // isCreating={isCreating}           
+              isCreating={isCreating}           
               setIsCreating={setIsCreating}              
               setIsEditing={setIsEditing}
+              toggle={toggle}
               setToggleContainer={setToggleContainer}
               type="team"
             />
@@ -101,18 +120,21 @@ const ChannelListContent: React.FC<Props> = ({ isCreating, setIsCreating, setCre
             <TeamChannelList
               {...listProps}
               type="messaging"
-              // isCreating={isCreating}
+              isCreating={isCreating}
               setIsCreating={setIsCreating}
               setCreateType={setCreateType}
               setIsEditing={setIsEditing}
+              toggle={toggle}
               setToggleContainer={setToggleContainer}
             />
           )}
           Preview={(previewProps) => {
             <TeamChannelPreview
               {...previewProps}
+              isCreating={isCreating}   
               setIsCreating={setIsCreating}              
               setIsEditing={setIsEditing}
+              toggle={toggle}
               setToggleContainer={setToggleContainer}              
               type="messaging"
             />
@@ -124,26 +146,26 @@ const ChannelListContent: React.FC<Props> = ({ isCreating, setIsCreating, setCre
 }
 
 interface ChannelListContainerProps {
-
+  isCreating: boolean
   setIsCreating: (value: boolean) => void
   setIsEditing: (value: boolean) => void
   setCreateType: (value: string) => void
 }
 
-const ChannelListContainer: React.FC<ChannelListContainerProps> = ({ setCreateType, setIsCreating, setIsEditing }) => {
-  const [toggleContainer, setToggleContainer] = useState(false)
+const ChannelListContainer: React.FC<ChannelListContainerProps> = ({ isCreating,setCreateType, setIsCreating, setIsEditing }) => {
+  const [toggleContainer, setToggleContainer] = useState<boolean>(false)
 
   return (
     <>
       <div className='channel-list__container'>
-        <ChannelListContent setIsCreating={setIsCreating} setCreateType={setCreateType} setIsEditing={setIsEditing} />
+        <ChannelListContent isCreating={isCreating} setIsCreating={setIsCreating} setCreateType={setCreateType} setIsEditing={setIsEditing} toggle={toggleContainer} setToggleContainer={setToggleContainer} />
       </div>
 
       <div className='channel-list__container-responsive'
         style={{ left: toggleContainer ? "0%" : "80%", backgroundColor: '#005fff' }}
       >
         <div className='channel-list__container-toggle' onClick={() => setToggleContainer((prevToggle) => !prevToggle)}></div>
-        <ChannelListContent setIsCreating={setIsCreating} setCreateType={setCreateType} setIsEditing={setIsEditing} setToggleContainer={setToggleContainer} />
+        <ChannelListContent isCreating={isCreating} setIsCreating={setIsCreating} setCreateType={setCreateType} setIsEditing={setIsEditing} toggle={toggleContainer} setToggleContainer={setToggleContainer} />
       </div>
     </>
   )

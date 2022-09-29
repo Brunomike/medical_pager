@@ -7,13 +7,33 @@ interface Props {
     setIsEditing: (value: boolean) => void
 }
 
+interface Message {
+    id: string
+    html: string
+    type: string
+    user: {
+
+    }
+    attachments: []
+    latest_reactions: []
+    own_reactions: []
+    reaction_counts: {}
+    reply_count: number
+    parent_id: string
+    created_at: Date
+    updated_at: Date
+    deleted_at: Date
+    mentioned_users: []
+    status: string
+}
+
 export const GiphyContext = React.createContext({});
 
 const ChannelInner: React.FC<Props> = ({ setIsEditing }) => {
     const [giphyState, setGiphyState] = useState(false);
     const { sendMessage } = useChannelActionContext();
 
-    const overrideSubmitHandler = (message) => {
+    const overrideSubmitHandler = (message: any) => {
         let updatedMessage = {
             attachments: message.attachments,
             mentioned_users: message.mentioned_users,
@@ -46,12 +66,12 @@ const ChannelInner: React.FC<Props> = ({ setIsEditing }) => {
     );
 };
 
-const TeamChannelHeader:React.FC<Props> = ({ setIsEditing }) => {
+const TeamChannelHeader: React.FC<Props> = ({ setIsEditing }) => {
     const { channel, watcher_count } = useChannelStateContext();
     const { client } = useChatContext();
 
     const MessagingHeader = () => {
-        const members = Object.values(channel.state.members).filter(({ user }) => user.id !== client.userID);
+        const members = Object.values(channel.state.members).filter(({ user }) => user?.id !== client.userID);
         const additionalMembers = members.length - 3;
 
         if (channel.type === 'messaging') {
@@ -59,8 +79,8 @@ const TeamChannelHeader:React.FC<Props> = ({ setIsEditing }) => {
                 <div className='team-channel-header__name-wrapper'>
                     {members.map(({ user }, i) => (
                         <div key={i} className='team-channel-header__name-multi'>
-                            <Avatar image={user.image} name={user.fullName || user.id} size={32} />
-                            <p className='team-channel-header__name user'>{user.fullName || user.id}</p>
+                            <Avatar image={user?.image} name={user?.fullName as string || user?.id as string} size={32} />
+                            <p className='team-channel-header__name user'>{user?.fullName as string || user?.id}</p>
                         </div>
                     ))}
 
@@ -71,7 +91,7 @@ const TeamChannelHeader:React.FC<Props> = ({ setIsEditing }) => {
 
         return (
             <div className='team-channel-header__channel-wrapper'>
-                <p className='team-channel-header__name'># {channel.data.name}</p>
+                <p className='team-channel-header__name'># {channel?.data?.name}</p>
                 <span style={{ display: 'flex' }} onClick={() => setIsEditing(true)}>
                     <ChannelInfo />
                 </span>
@@ -79,7 +99,7 @@ const TeamChannelHeader:React.FC<Props> = ({ setIsEditing }) => {
         );
     };
 
-    const getWatcherText = (watchers) => {
+    const getWatcherText = (watchers: any) => {
         if (!watchers) return 'No users online';
         if (watchers === 1) return '1 user online';
         return `${watchers} users online`;

@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useChatContext } from 'stream-chat-react';
 
 import {ResultsDropdown} from './'
-import { SearchIcon } from '../assets';
+import { SearchIcon } from '../assets'
+import {Channel} from '../data_structure'
 
 interface Props {
+    toggle:boolean
     setToggleContainer: (value: boolean) => void
 }
 
-const ChannelSearch = ({ setToggleContainer }) => {
+const ChannelSearch:React.FC<Props> = ({ toggle,setToggleContainer }) => {
     const { client, setActiveChannel } = useChatContext()
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
-    const [teamChannels, setTeamChannels] = useState([])
-    const [directChannels, setDirectChannels] = useState([])
+    // TODO : INTRODUCE CORRECT TYPE
+    // const [teamChannels, setTeamChannels] = useState<Channel[]>([])
+    const [teamChannels, setTeamChannels] = useState<any[]>([])
+    const [directChannels, setDirectChannels] = useState<any[]>([])
 
     useEffect(() => {
         if (!query) {
@@ -26,13 +30,13 @@ const ChannelSearch = ({ setToggleContainer }) => {
     const getChannels = async (text: string) => {
         try {
             const channelResponse = client.queryChannels({
-                type: 'team',
-                name: { $autocomplete: text },
-                members: { $in: [client.userID] }
-            })
+                type: 'team', 
+                name: { $autocomplete: text }, 
+                members: { $in: [client.userID as string]}
+            });
 
             const userResponse = client.queryUsers({
-                id: { $ne: [client.userID] },
+                id: { $ne: client.userID as string },
                 name: { $autocomplete: text }
             })
 
@@ -56,7 +60,8 @@ const ChannelSearch = ({ setToggleContainer }) => {
         getChannels(event.target.value);
     }
 
-    const setChannel = (channel) => {
+    // TODO : INTRODUCE CORRECT TYPE
+    const setChannel = (channel:any) => {
         setQuery('');
         setActiveChannel(channel)
 
@@ -84,7 +89,8 @@ const ChannelSearch = ({ setToggleContainer }) => {
                         directChannels={directChannels}
                         loading={loading}
                         setChannel={setChannel}
-                        setQuery={setQuery}
+                        // setQuery={setQuery}
+                        toggle={toggle}
                         setToggleContainer={setToggleContainer}
                     />
                 )
